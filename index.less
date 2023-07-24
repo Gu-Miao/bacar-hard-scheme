@@ -1,0 +1,304 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-size: 16px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eee;
+}
+
+#canvas {
+  --padding: 4em;
+
+  width: calc(44em + var(--padding) * 2);
+  height: calc(32em + var(--padding) * 2);
+  background-color: #fff;
+  position: relative;
+  border: var(--padding) solid #fff;
+  border-radius: 1em;
+}
+
+.point {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: #000;
+  position: absolute;
+  transform: translate(-50%, -50%);
+
+  // 邪龙领域 1-8
+  &:nth-child(1) {
+    top: 0;
+    left: 0;
+  }
+
+  &:nth-child(2) {
+    top: 0;
+    left: 4em;
+  }
+
+  // 九尾
+  &:nth-child(3) {
+    top: 0;
+    left: 8em;
+  }
+
+  &:nth-child(4) {
+    top: 4em;
+    left: 0;
+  }
+
+  &:nth-child(5) {
+    top: 4em;
+    left: 4em;
+  }
+
+  &:nth-child(6) {
+    top: 8em;
+    left: 0;
+  }
+
+  // 邪龙
+  &:nth-child(7) {
+    top: 8em;
+    left: 8em;
+  }
+
+  &:nth-child(8) {
+    top: 12em;
+    left: 0;
+  }
+
+  // 中路 9-14
+  &:nth-child(9) {
+    top: 16em;
+    left: 0;
+  }
+
+  &:nth-child(10) {
+    top: 16em;
+    left: 4em;
+  }
+
+  &:nth-child(11) {
+    top: 16em;
+    left: 8em;
+  }
+
+  &:nth-child(12) {
+    top: 16em;
+    left: 12em;
+  }
+
+  // 魔龙
+  &:nth-child(13) {
+    top: 16em;
+    left: 16em;
+  }
+
+  // 巴卡尔
+  &:nth-child(14) {
+    top: 16em;
+    left: 24em;
+  }
+
+  // 狂龙领域 15-22
+  &:nth-child(15) {
+    top: 20em;
+    left: 0;
+  }
+
+  &:nth-child(16) {
+    top: 24em;
+    left: 0;
+  }
+
+  // 狂龙
+  &:nth-child(17) {
+    top: 24em;
+    left: 8em;
+  }
+
+  &:nth-child(18) {
+    top: 28em;
+    left: 0;
+  }
+
+  &:nth-child(19) {
+    top: 28em;
+    left: 4em;
+  }
+
+  &:nth-child(20) {
+    top: 32em;
+    left: 0;
+  }
+
+  &:nth-child(21) {
+    top: 32em;
+    left: 4em;
+  }
+
+  // 花女
+  &:nth-child(22) {
+    top: 32em;
+    left: 8em;
+  }
+
+  // 上路 23-26
+  &:nth-child(23) {
+    top: 0;
+    left: 16em;
+  }
+
+  &:nth-child(24) {
+    top: 0;
+    left: 20em;
+  }
+
+  &:nth-child(25) {
+    top: 0;
+    left: 24em;
+  }
+
+  &:nth-child(26) {
+    top: 0;
+    left: 28em;
+  }
+
+  // 上回廊 27-32
+  &:nth-child(27) {
+    top: 4em;
+    left: 28em;
+  }
+
+  &:nth-child(28) {
+    top: 8em;
+    left: 16em;
+  }
+
+  &:nth-child(29) {
+    top: 8em;
+    left: 20em;
+  }
+
+  &:nth-child(30) {
+    top: 8em;
+    left: 24em;
+  }
+
+  &:nth-child(31) {
+    top: 8em;
+    left: 28em;
+  }
+
+  &:nth-child(32) {
+    top: 8em;
+    left: 32em;
+  }
+
+  // 下回廊 33-38
+  &:nth-child(33) {
+    top: 24em;
+    left: 16em;
+  }
+
+  &:nth-child(34) {
+    top: 24em;
+    left: 20em;
+  }
+
+  &:nth-child(35) {
+    top: 24em;
+    left: 24em;
+  }
+
+  &:nth-child(36) {
+    top: 24em;
+    left: 28em;
+  }
+
+  &:nth-child(37) {
+    top: 24em;
+    left: 32em;
+  }
+
+  &:nth-child(38) {
+    top: 28em;
+    left: 28em;
+  }
+
+  // 下路 39-42
+  &:nth-child(39) {
+    top: 32em;
+    left: 16em;
+  }
+
+  &:nth-child(40) {
+    top: 32em;
+    left: 20em;
+  }
+
+  &:nth-child(41) {
+    top: 32em;
+    left: 24em;
+  }
+
+  &:nth-child(42) {
+    top: 32em;
+    left: 28em;
+  }
+
+  // 冰龙领域 43-51
+  &:nth-child(43) {
+    top: 8em;
+    left: 36em;
+  }
+
+  &:nth-child(44) {
+    top: 8em;
+    left: 40em;
+  }
+
+  &:nth-child(45) {
+    top: 8em;
+    left: 44em;
+  }
+
+  // 冰女
+  &:nth-child(46) {
+    top: 16em;
+    left: 32em;
+  }
+
+  // 冰龙
+  &:nth-child(47) {
+    top: 16em;
+    left: 38em;
+  }
+
+  &:nth-child(48) {
+    top: 16em;
+    left: 44em;
+  }
+
+  &:nth-child(49) {
+    top: 24em;
+    left: 36em;
+  }
+
+  &:nth-child(50) {
+    top: 24em;
+    left: 40em;
+  }
+
+  &:nth-child(51) {
+    top: 24em;
+    left: 44em;
+  }
+}
