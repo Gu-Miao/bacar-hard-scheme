@@ -1,0 +1,12 @@
+{
+  "data": {
+    "scope": "typescript",
+    "prefix": "dataSnippet",
+    "body": ["{", "  x: $1,", "  y: $2,", "},$0"]
+  },
+  "data1": {
+    "scope": "typescript",
+    "prefix": "data1Snippet",
+    "body": ["{", "  x: $1,", "  y: $2,", "  monster: $3", "},$0"]
+  }
+}
