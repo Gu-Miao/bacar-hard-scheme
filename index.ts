@@ -105,19 +105,17 @@ function render() {
   // 上下 buff 相同 2*2*2*3 共 24 种情况
   // 绿队先打精英，黄 3buff
   if (buffMap[22] === buffMap[38]) {
-    render()
-    return
-
     const redDragon = watcherBuffMap[buffMap[22]]
     const yellowDragon = buffMap[22]
     const eliteName = getEliteName(getRestBuff(redDragon, yellowDragon))
 
-    console.log('===上下 buff 相同===')
+    console.log('=== 上下 buff 相同 ===')
+    console.log('【思路】绿先打精英，红黄上下待机')
     console.log(`绿队${eliteName}，中路开门，BOSS`)
     console.log(`红队开${yellowDragon}门，打${redDragon}龙`)
     console.log(`黄队贤龙，开${redDragon}门，打${yellowDragon}龙`)
     console.log('红黄等绿队打完精英再进门将')
-    console.log('===上下 buff 相同===')
+    console.log('=== 上下 buff 相同 ===')
   }
   // 三个门将 BUFF 都不相同 2*3*2 共 12 种情况
   // 红绿上下随意，绿开门，然后打门将对应 buff 区域的精英，黄中路然后 3buff
@@ -126,8 +124,6 @@ function render() {
     buffMap[21] !== buffMap[45] &&
     buffMap[2] !== buffMap[45]
   ) {
-    render()
-    return
     const redWatcher = buffMap[22]
     const redDragon = watcherBuffMap[redWatcher]
     const greenWathcer = buffMap[38]
@@ -135,11 +131,12 @@ function render() {
     const yellowWatcher = getRestBuff(redWatcher, greenWathcer)
     const yellowDragon = watcherBuffMap[yellowWatcher]
 
-    console.log('===三门将 BUFF 均不同===')
+    console.log('=== 三门将 BUFF 均不同 ===')
+    console.log('【思路】红绿随意上下，黄队开门 3buff')
     console.log(`红队上路，开${redWatcher}门，打${redDragon}龙`)
     console.log(`绿队下路，开${greenWathcer}门，${eliteName}，巴卡尔`)
     console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
-    console.log('===三门将 BUFF 均不同===')
+    console.log('=== 三门将 BUFF 均不同 ===')
   }
   // 天选开局 3*2*2 共 12 种情况
   // 红黄互开，绿队中路然后 3buff 精英
@@ -147,22 +144,73 @@ function render() {
     watcherBuffMap[buffMap[22]] === buffMap[38] &&
     watcherBuffMap[buffMap[38]] === buffMap[22]
   ) {
-    render()
-    return
     const eliteName = getEliteName(getRestBuff(buffMap[22], buffMap[38]))
 
-    console.log('===天选开局===')
+    console.log('=== 天选开局 ===')
+    console.log('【思路】红黄互开，绿队先开中路再 3buff')
     console.log(`绿队中路开门，贤龙，${eliteName}，巴卡尔`)
     console.log(`红黄${buffMap[22]}${buffMap[38]}互开`)
-    console.log('===天选开局===')
+    console.log('=== 天选开局 ===')
   }
   // 311 3*2 共 6 种情况
   // 红走 3，绿穿 2
   else if (is311()) {
-  } else {
-    render()
-    return
+    const redWatcher = get3From311()
+    const redRoute = getRoute(redWatcher)
+    const redDragon = watcherBuffMap[redWatcher]
+    const greenWathcer = getRestBuff(redWatcher, redDragon)
+    const greenRoute = getRoute(greenWathcer)
+    const eliteName = getEliteName(greenWathcer)
+    const yellowWatcher = redDragon
+    const yellowDragon = getRestBuff(redDragon, greenWathcer)
+
+    console.log('=== 311 ===')
+    console.log('【思路】红走 3，绿穿 2，黄中路 3buff')
+    console.log(`红队${redRoute}路，开${redWatcher}门，打${redDragon}龙`)
+    console.log(`绿队${greenRoute}路，开${greenWathcer}门，${eliteName}，巴卡尔`)
+    console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
+    console.log('=== 311 ===')
   }
+  // 221 3*3*2 共 12 种情况
+  // 红走 2，绿穿 2
+  else {
+    const redWatcher = get2From221()
+    const redRoute = getRoute(redWatcher)
+    const redDragon = watcherBuffMap[redWatcher]
+    const greenWathcer = getRestBuff(redWatcher, redDragon)
+    const greenRoute = getRoute(greenWathcer)
+    const eliteName = getEliteName(greenWathcer)
+    const yellowWatcher = redDragon
+    const yellowDragon = getRestBuff(redDragon, greenWathcer)
+
+    console.log('=== 221 ===')
+    console.log('【思路】红走 2，绿穿 2，黄中路 3buff')
+    console.log(`红队${redRoute}路，开${redWatcher}门，打${redDragon}龙`)
+    console.log(`绿队${greenRoute}路，开${greenWathcer}门，${eliteName}，巴卡尔`)
+    console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
+    console.log('=== 221 ===')
+  }
+}
+
+function get2From221(): Buff {
+  const buffs = Object.values(buffMap)
+  let count = 0
+
+  for (let i = 0; i < buffs.length; i++) {
+    const buff = buffs[i]
+    if (buff === buffMap[22]) {
+      count++
+      if (count === 2) {
+        return buffMap[22]
+      }
+    }
+  }
+
+  return buffMap[22]
+}
+
+function getRoute(buff: Buff) {
+  return buff === buffMap[22] ? '上' : '下'
 }
 
 function is311() {
@@ -182,6 +230,24 @@ function is311() {
   }
 
   return false
+}
+
+//@ts-ignore
+function get3From311(): Buff {
+  const buffs = Object.values(buffMap)
+  const map = {
+    邪: 0,
+    狂: 0,
+    冰: 0,
+  }
+
+  for (let i = 0; i < 4; i++) {
+    const buff = buffs[i]
+    map[buff]++
+    if (map[buff] === 2) {
+      return buff
+    }
+  }
 }
 
 function getRestBuff(...buffs: Buff[]) {
