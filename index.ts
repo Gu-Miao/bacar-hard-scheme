@@ -102,22 +102,44 @@ function render() {
     冰: buffMap[45],
   }
 
-  // 上下 buff 相同 2*2*2*3 共 24 种情况
+  // 上下 buff 相同
+  // 上下路 buff -- 3，每个门将各自的 buff -- 2*2*2，共 24 种情况
   // 绿队先打精英，黄 3buff
   if (buffMap[22] === buffMap[38]) {
+    const redRoute = buffMap[38] === '狂' ? '下' : '上'
+    const yellowRoute = redRoute === '上' ? '下' : '上'
     const redDragon = watcherBuffMap[buffMap[22]]
-    const yellowDragon = buffMap[22]
+    const yellowDragon = watcherBuffMap[redDragon]
     const eliteName = getEliteName(getRestBuff(redDragon, yellowDragon))
 
     console.log('=== 上下 buff 相同 ===')
     console.log('【思路】绿先打精英，红黄上下待机')
+    console.log(
+      '【思路】全场只有 2 种 buff，绿队去打剩下 buff 区域的精英，有 3 种，绿队去长脚怪 buff 区域的精英',
+    )
     console.log(`绿队${eliteName}，中路开门，BOSS`)
-    console.log(`红队开${yellowDragon}门，打${redDragon}龙`)
-    console.log(`黄队贤龙，开${redDragon}门，打${yellowDragon}龙`)
+    console.log(`红队${redRoute}路，开${yellowDragon}门，打${redDragon}龙`)
+    console.log(`黄队${yellowRoute}路，贤龙，开${redDragon}门，打${yellowDragon}龙`)
     console.log('红黄等绿队打完精英再进门将')
     console.log('=== 上下 buff 相同 ===')
   }
-  // 三个门将 BUFF 都不相同 2*3*2 共 12 种情况
+  // 天选开局
+  // 邪狂/邪冰/狂冰 3 种情况，上下路 buff 位置 2 种，另一个门将的 buff 2种，共 12 种
+  // 红黄互开，绿队中路然后 3buff 精英
+  else if (
+    watcherBuffMap[buffMap[22]] === buffMap[38] &&
+    watcherBuffMap[buffMap[38]] === buffMap[22]
+  ) {
+    const eliteName = getEliteName(getRestBuff(buffMap[22], buffMap[38]))
+
+    console.log('=== 天选开局 ===')
+    console.log('【思路】红黄互开，绿队先开中路再 3buff')
+    console.log(`绿队中路开门，贤龙，${eliteName}，巴卡尔`)
+    console.log(`红黄${buffMap[22]}${buffMap[38]}互开`)
+    console.log('=== 天选开局 ===')
+  }
+  // 三个门将 BUFF 都不相同
+  // 三个门将 buff 组合（狂冰邪/冰邪狂）2 种，上下路 buff 不同 2*3 有 6 种，共 12 种
   // 红绿上下随意，绿开门，然后打门将对应 buff 区域的精英，黄中路然后 3buff
   else if (
     buffMap[2] !== buffMap[21] &&
@@ -138,21 +160,9 @@ function render() {
     console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
     console.log('=== 三门将 BUFF 均不同 ===')
   }
-  // 天选开局 3*2*2 共 12 种情况
-  // 红黄互开，绿队中路然后 3buff 精英
-  else if (
-    watcherBuffMap[buffMap[22]] === buffMap[38] &&
-    watcherBuffMap[buffMap[38]] === buffMap[22]
-  ) {
-    const eliteName = getEliteName(getRestBuff(buffMap[22], buffMap[38]))
-
-    console.log('=== 天选开局 ===')
-    console.log('【思路】红黄互开，绿队先开中路再 3buff')
-    console.log(`绿队中路开门，贤龙，${eliteName}，巴卡尔`)
-    console.log(`红黄${buffMap[22]}${buffMap[38]}互开`)
-    console.log('=== 天选开局 ===')
-  }
-  // 311 3*2 共 6 种情况
+  // 311
+  // 相同 buff 的门将的位置组合（位置确定，门将 buff 确定）3 种，另一个有相同 buff 的长脚
+  // 的位置 -- 2 种，剩余一个长脚和门将的 buff 组合（从剩下的 buff 选）2 种，共 12 种
   // 红走 3，绿穿 2
   else if (is311()) {
     const redWatcher = get3From311()
@@ -171,7 +181,9 @@ function render() {
     console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
     console.log('=== 311 ===')
   }
-  // 221 3*3*2 共 12 种情况
+  // 221
+  // 第一种相同 buff 的门将位置（确定位置，确定 buff）3 种，剩余一个门将和长脚的位置（门将位
+  // 置确定，只看长脚上下）2种，后面 21 的 buff 组合 -- 2 种，共 12 种
   // 红走 2，绿穿 2
   else {
     const redWatcher = get2From221()
