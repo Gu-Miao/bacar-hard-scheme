@@ -2,41 +2,36 @@ import data, { Data, Buff } from './data'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+const route = document.getElementById('route') as HTMLDivElement
 
-let cellSize = 55
+const maxCellSize = 52
+let cellSize = maxCellSize
 const horizontalCells = 11
 const verticalCells = 8
-const padding = cellSize * 0.4
 
-const pointSize = cellSize * 0.1
-const bossSize = pointSize * 3
+let padding: number
+let pointSize: number
+let bossSize: number
 
 const buffMap: Record<string, Buff> = {}
 
-function getPosition(point: Data): [number, number] {
-  return [point.x * cellSize + padding, point.y * cellSize + padding]
-}
-
-function getBuff(ableBuffs: Buff[]) {
-  const i = Math.round(Math.random() * (ableBuffs.length - 1))
-  return ableBuffs[i]
-}
-
-function drawBuff(point: Data, buff: Buff) {
-  ctx.beginPath()
-  renderPoint(point)
-  ctx.fillStyle = buff === '邪' ? '#27ae60' : buff === '冰' ? '#3498db' : '#e67e22'
-  ctx.fill()
-  ctx.closePath()
-
-  ctx.font = `${bossSize * 1.2}px Helvetica`
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillStyle = 'white'
-  ctx.fillText(buff, ...getPosition(point))
-}
-
+getComputed()
 render()
+
+window.addEventListener('resize', handleResize)
+
+function handleResize() {
+  cellSize = Math.min(maxCellSize, Math.floor(document.documentElement.clientWidth / 14.2))
+
+  getComputed()
+  render()
+}
+
+function getComputed() {
+  padding = cellSize * 0.8
+  pointSize = cellSize * 0.1
+  bossSize = pointSize * 3
+}
 
 /** Clean canvas */
 function clean() {
@@ -45,6 +40,12 @@ function clean() {
   canvas.height = verticalCells * cellSize + padding * 2
 }
 
+/**
+ * Draw point
+ *
+ * @param i Index
+ * @param point Point data
+ */
 function drawPoint(i: number, point: Data) {
   if (point.ableBuffs) {
     buffMap[i] = getBuff(point.ableBuffs)
@@ -54,6 +55,11 @@ function drawPoint(i: number, point: Data) {
   renderPoint(point)
 }
 
+/**
+ * Render point on canvas
+ *
+ * @param point Point data
+ */
 function renderPoint(point: Data) {
   const [x, y] = getPosition(point)
   const radius = point.ableBuffs || point.monster ? bossSize : pointSize
@@ -61,6 +67,12 @@ function renderPoint(point: Data) {
   ctx.arc(x, y, radius, 0, Math.PI * 2)
 }
 
+/**
+ * Render line on canvas
+ *
+ * @param p1 Point 1 data
+ * @param p2 Point 2 data
+ */
 function renderLine(p1: Data, p2: Data) {
   ctx.moveTo(...getPosition(p1))
   ctx.lineTo(...getPosition(p2))
@@ -112,16 +124,12 @@ function render() {
     const yellowDragon = watcherBuffMap[redDragon]
     const eliteName = getEliteName(getRestBuff(redDragon, yellowDragon))
 
-    console.log('=== 上下 buff 相同 ===')
-    console.log('【思路】绿先打精英，红黄上下待机')
-    console.log(
-      '【思路】全场只有 2 种 buff，绿队去打剩下 buff 区域的精英，有 3 种，绿队去长脚怪 buff 区域的精英',
-    )
-    console.log(`绿队${eliteName}，中路开门，BOSS`)
-    console.log(`红队${redRoute}路，开${yellowDragon}门，打${redDragon}龙`)
-    console.log(`黄队${yellowRoute}路，贤龙，开${redDragon}门，打${yellowDragon}龙`)
-    console.log('红黄等绿队打完精英再进门将')
-    console.log('=== 上下 buff 相同 ===')
+    route.innerHTML = `=== 上下 buff 相同 ===<br/>
+【思路】绿先打精英，红黄上下待机，全场只有 2 种 buff，绿队去打剩下 buff 区域的<br/>精英，有 3 种，绿队去长脚怪 buff 区域的精英<br/>
+绿队${eliteName}，中路开门，BOSS<br/>
+红队${redRoute}路，开${yellowDragon}门，打${redDragon}龙<br/>
+黄队${yellowRoute}路，贤龙，开${redDragon}门，打${yellowDragon}龙<br/>
+红黄等绿队打完精英再进门将`
   }
   // 天选开局
   // 邪狂/邪冰/狂冰 3 种情况，上下路 buff 位置 2 种，另一个门将的 buff 2种，共 12 种
@@ -132,11 +140,10 @@ function render() {
   ) {
     const eliteName = getEliteName(getRestBuff(buffMap[22], buffMap[38]))
 
-    console.log('=== 天选开局 ===')
-    console.log('【思路】红黄互开，绿队先开中路再 3buff')
-    console.log(`绿队中路开门，贤龙，${eliteName}，巴卡尔`)
-    console.log(`红黄${buffMap[22]}${buffMap[38]}互开`)
-    console.log('=== 天选开局 ===')
+    route.innerHTML = `=== 天选开局 ===<br/>
+【思路】红黄互开，绿队先开中路再 3buff<br/>
+绿队中路开门，贤龙，${eliteName}，巴卡尔<br/>
+红黄${buffMap[22]}${buffMap[38]}互开`
   }
   // 三个门将 BUFF 都不相同
   // 三个门将 buff 组合（狂冰邪/冰邪狂）2 种，上下路 buff 不同 2*3 有 6 种，共 12 种
@@ -153,12 +160,11 @@ function render() {
     const yellowWatcher = getRestBuff(redWatcher, greenWathcer)
     const yellowDragon = watcherBuffMap[yellowWatcher]
 
-    console.log('=== 三门将 BUFF 均不同 ===')
-    console.log('【思路】红绿随意上下，黄队开门 3buff')
-    console.log(`红队上路，开${redWatcher}门，打${redDragon}龙`)
-    console.log(`绿队下路，开${greenWathcer}门，${eliteName}，巴卡尔`)
-    console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
-    console.log('=== 三门将 BUFF 均不同 ===')
+    route.innerHTML = `=== 三门将 BUFF 均不同 ===<br/>
+【思路】红绿随意上下，黄队开门 3buff<br/>
+红队上路，开${redWatcher}门，打${redDragon}龙<br/>
+绿队下路，开${greenWathcer}门，${eliteName}，巴卡尔<br/>
+黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`
   }
   // 311
   // 相同 buff 的门将的位置组合（位置确定，门将 buff 确定）3 种，另一个有相同 buff 的长脚
@@ -174,12 +180,11 @@ function render() {
     const yellowWatcher = redDragon
     const yellowDragon = getRestBuff(redDragon, greenWathcer)
 
-    console.log('=== 311 ===')
-    console.log('【思路】红走 3，绿穿 2，黄中路 3buff')
-    console.log(`红队${redRoute}路，开${redWatcher}门，打${redDragon}龙`)
-    console.log(`绿队${greenRoute}路，开${greenWathcer}门，${eliteName}，巴卡尔`)
-    console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
-    console.log('=== 311 ===')
+    route.innerHTML = `=== 311 ===<br/>
+【思路】红走 3，绿穿 2，黄中路 3buff<br/>
+红队${redRoute}路，开${redWatcher}门，打${redDragon}龙<br/>
+绿队${greenRoute}路，开${greenWathcer}门，${eliteName}，巴卡尔<br/>
+黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`
   }
   // 221
   // 第一种相同 buff 的门将位置（确定位置，确定 buff）3 种，剩余一个门将和长脚的位置（门将位
@@ -195,15 +200,60 @@ function render() {
     const yellowWatcher = redDragon
     const yellowDragon = getRestBuff(redDragon, greenWathcer)
 
-    console.log('=== 221 ===')
-    console.log('【思路】红走 2，绿穿 2，黄中路 3buff')
-    console.log(`红队${redRoute}路，开${redWatcher}门，打${redDragon}龙`)
-    console.log(`绿队${greenRoute}路，开${greenWathcer}门，${eliteName}，巴卡尔`)
-    console.log(`黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`)
-    console.log('=== 221 ===')
+    route.innerHTML = `=== 221 ===<br/>
+【思路】红走 2，绿穿 2，黄中路 3buff<br/>
+红队${redRoute}路，开${redWatcher}门，打${redDragon}龙<br/>
+绿队${greenRoute}路，开${greenWathcer}门，${eliteName}，巴卡尔<br/>
+黄队中路开门，贤龙，开${yellowWatcher}门，打${yellowDragon}龙`
   }
 }
 
+/**
+ * Get pixel position of point
+ *
+ * @param point Point data
+ * @returns A tuple of pixel position on canvas
+ */
+function getPosition(point: Data): [number, number] {
+  return [point.x * cellSize + padding, point.y * cellSize + padding]
+}
+
+/**
+ * Get a random buff
+ *
+ * @param ableBuffs Possible Buffs
+ * @returns A random buff
+ */
+function getBuff(ableBuffs: Buff[]): Buff {
+  const i = Math.round(Math.random() * (ableBuffs.length - 1))
+  return ableBuffs[i]
+}
+
+/**
+ * Draw buff point
+ *
+ * @param point Point data
+ * @param buff Buff of the point
+ */
+function drawBuff(point: Data, buff: Buff) {
+  ctx.beginPath()
+  renderPoint(point)
+  ctx.fillStyle = buff === '邪' ? '#27ae60' : buff === '冰' ? '#3498db' : '#e67e22'
+  ctx.fill()
+  ctx.closePath()
+
+  ctx.font = `${bossSize * 1.2}px Helvetica`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillStyle = 'white'
+  ctx.fillText(buff, ...getPosition(point))
+}
+
+/**
+ * Get buff of '2' for the special situation 211
+ *
+ * @returns buff of '2'
+ */
 function get2From221(): Buff {
   const buffs = Object.values(buffMap)
   let count = 0
@@ -221,10 +271,21 @@ function get2From221(): Buff {
   return buffMap[22]
 }
 
+/**
+ * Get route
+ *
+ * @param buff Buff
+ * @returns Route
+ */
 function getRoute(buff: Buff) {
   return buff === buffMap[22] ? '上' : '下'
 }
 
+/**
+ * Confirm if it is a special situation 311
+ *
+ * @returns Ture or false
+ */
 function is311() {
   const buffs = Object.values(buffMap)
   const map = {
@@ -244,6 +305,11 @@ function is311() {
   return false
 }
 
+/**
+ * Get buff of '3' for special situation 311
+ *
+ * @returns Buff
+ */
 //@ts-ignore
 function get3From311(): Buff {
   const buffs = Object.values(buffMap)
@@ -262,7 +328,13 @@ function get3From311(): Buff {
   }
 }
 
-function getRestBuff(...buffs: Buff[]) {
+/**
+ * Get the rest buff
+ *
+ * @param buffs Array of buffs
+ * @returns The rest buff
+ */
+function getRestBuff(...buffs: Buff[]): Buff {
   const arr: Buff[] = ['邪', '狂', '冰']
   for (let i = 0; i < buffs.length; i++) {
     const index = arr.findIndex(buff => buff === buffs[i])
@@ -272,6 +344,12 @@ function getRestBuff(...buffs: Buff[]) {
   return arr[0]
 }
 
+/**
+ * Get name of elite according to buff
+ *
+ * @param buff Buff
+ * @returns Elite name
+ */
 function getEliteName(buff: Buff) {
   return buff === '邪' ? '斯万' : buff === '狂' ? '埃克莱尔' : '司特茨'
 }
