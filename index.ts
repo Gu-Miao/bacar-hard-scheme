@@ -15,8 +15,7 @@ let bossSize: number
 
 const buffMap: Record<string, Buff> = {}
 
-getComputed()
-render()
+handleResize()
 
 window.addEventListener('resize', handleResize)
 
