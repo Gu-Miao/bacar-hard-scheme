@@ -101,7 +101,7 @@ const data: Data[] = [
   {
     x: 0,
     y: 6,
-    siblings: [14, 16, 17],
+    siblings: [14, 17],
   },
   // 狂龙
   {
