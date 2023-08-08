@@ -23,6 +23,9 @@ function handleResize() {
   cellSize = Math.min(maxCellSize, Math.floor(document.documentElement.clientWidth / 14.2))
 
   getComputed()
+
+  route.style.width = `${cellSize * 11 + padding * 2}px`
+
   render()
 }
 
