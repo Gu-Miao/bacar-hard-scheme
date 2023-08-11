@@ -19,6 +19,31 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  position: relative;
+}
+
+button {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  box-shadow: none;
+  outline: none;
+  border: none;
+  background-color: #32abf1;
+  color: white;
+  transition: color 0.4s ease-in-out;
+
+  &:active,
+  &:hover {
+    background-color: #08c;
+  }
+
+  &:active {
+    padding-top: 0.6em;
+    padding-bottom: 0.4em;
+  }
 }
 
 #canvas,

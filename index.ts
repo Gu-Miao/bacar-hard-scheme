@@ -3,6 +3,7 @@ import data, { Data, Buff } from './data'
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 const route = document.getElementById('route') as HTMLDivElement
+const refresh = document.querySelector('button') as HTMLButtonElement
 
 const maxCellSize = 52
 let cellSize = maxCellSize
@@ -18,6 +19,7 @@ const buffMap: Record<string, Buff> = {}
 handleResize()
 
 window.addEventListener('resize', handleResize)
+refresh.addEventListener('click', handleResize)
 
 function handleResize() {
   cellSize = Math.min(maxCellSize, Math.floor(document.documentElement.clientWidth / 14.2))
@@ -270,7 +272,7 @@ function get2From221(): Buff {
     }
   }
 
-  return buffMap[22]
+  return buffMap[38]
 }
 
 /**
